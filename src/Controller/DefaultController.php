@@ -19,6 +19,7 @@ class DefaultController extends AbstractController
      */
        public function index($aaa)
     {
+//        dump($aaa);
         return $this->render('lucky/number.html.twig', ['number' => $aaa]);
     }
 }
