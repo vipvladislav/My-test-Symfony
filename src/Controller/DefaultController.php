@@ -67,4 +67,35 @@ class DefaultController extends AbstractController
 
         return new Response($article->getTitle());
     }
+
+    /**
+     * @Route(path="/articles/delete/{id}")
+     * *
+     * @param Article $article
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function deleteArticle(Article $article, EntityManagerInterface $entityManager)
+    {
+        $entityManager->remove($article);
+        $entityManager->flush();
+
+        return new Response('Deleted!');
+    }
+
+
+    /**
+     * @Route(path="/list")
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function list(EntityManagerInterface $entityManager)
+    {
+        $articleReppo = $entityManager->getRepository(Article::class);
+        $articles = $articleReppo->findAll();
+
+//        dd($articles);
+
+        return new Response('list');
+    }
 }
