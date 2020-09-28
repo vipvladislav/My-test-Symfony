@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Article;
+use App\Entity\Category;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,19 +32,25 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @Route(path="/add-article")
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @Route(path="/add-article")
      */
     public function next(EntityManagerInterface $entityManager)
     {
+        $category = new Category();
+        $category->setTitle('kykykyky');
+
         $article = new Article();
+
         $article
             ->setImage('my-image')
             ->setContent('my-content')
             ->setTitle('my-title')
+            ->setCategories($category)
         ;
 
+        $entityManager->persist($category);
         $entityManager->persist($article);
         $entityManager->flush();
 
@@ -91,10 +98,10 @@ class DefaultController extends AbstractController
      */
     public function list(EntityManagerInterface $entityManager)
     {
-        $articleReppo = $entityManager->getRepository(Article::class);
-        $articles = $articleReppo->findAll();
+        $articleRepository = $entityManager->getRepository(Article::class);
+        $articles = $articleRepository->findAll();
 
-//        dd($articles);
+        dd($articleRepository->findByCategoryId(4));
 
         return new Response('list');
     }
