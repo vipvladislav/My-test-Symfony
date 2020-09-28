@@ -32,6 +32,46 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @Route("/{aaa}/blog_all.html.twig", name="blog_all.html.twig")
+     * @param $aaa
+     * @return Response
+     */
+    public function blogAll($aaa)
+    {
+        $result =  $this->render('lucky/blog_all.html.twig', ['number' => $aaa]);
+        $this->addFlash('success', $aaa);
+
+        return $result;
+    }
+
+    /**
+     * @Route("/{aaa}/about.html.twig", name="about.html.twig")
+     * @param $aaa
+     * @return Response
+     */
+    public function aboutAll($aaa)
+    {
+        $result =  $this->render(/** @lang text */ 'lucky/about.html.twig', ['number' => $aaa]);
+        $this->addFlash('success', $aaa);
+
+        return $result;
+    }
+
+    /**
+     * @Route("/{aaa}/contact.html.twig", name="contact.html.twig")
+     * @param $aaa
+     * @return Response
+     */
+    public function contact($aaa)
+    {
+        $result =  $this->render(/** @lang text */ 'lucky/contact.html.twig', ['number' => $aaa]);
+        $this->addFlash('success', $aaa);
+
+        return $result;
+    }
+
+
+    /**
      * @Route(path="/add-article")
      * @param EntityManagerInterface $entityManager
      * @return Response
