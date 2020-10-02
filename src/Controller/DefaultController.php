@@ -45,6 +45,19 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @Route("/{aaa}/blog_single.html.twig", name="blog_single.html.twig")
+     * @param $aaa
+     * @return Response
+     */
+    public function blogSingle($aaa)
+    {
+        $result =  $this->render('lucky/blog_single.html.twig', ['number' => $aaa]);
+        $this->addFlash('success', $aaa);
+
+        return $result;
+    }
+
+    /**
      * @Route("/{aaa}/about.html.twig", name="about.html.twig")
      * @param $aaa
      * @return Response
