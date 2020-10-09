@@ -6,9 +6,12 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Form\ArticleType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -21,27 +24,20 @@ class DefaultController extends AbstractController
     /**
      * @param $aaa
      * @return Response
-     * @Route("/{aaa}/blog", name="blog_list")
+     * @Route("", name="home")
      */
-    public function index($aaa)
+    public function index()
     {
-        $result =  $this->render('lucky/number.html.twig', ['number' => $aaa]);
-        $this->addFlash('success', $aaa);
-
-        return $result;
+        return $this->render('lucky/index.html.twig');
     }
 
     /**
-     * @Route("/{aaa}/blog_all.html.twig", name="blog_all.html.twig")
-     * @param $aaa
      * @return Response
+     * @Route("/blog", name="blog")
      */
-    public function blogAll($aaa)
+    public function blog()
     {
-        $result =  $this->render('lucky/blog_all.html.twig', ['number' => $aaa]);
-        $this->addFlash('success', $aaa);
-
-        return $result;
+        return $this->render('lucky/blog.html.twig');
     }
 
     /**
@@ -58,74 +54,82 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/{aaa}/about.html.twig", name="about.html.twig")
-     * @param $aaa
+     * @Route("/team", name="team")
      * @return Response
      */
-    public function aboutAll($aaa)
+    public function team()
     {
-        $result =  $this->render(/** @lang text */ 'lucky/about.html.twig', ['number' => $aaa]);
-        $this->addFlash('success', $aaa);
-
-        return $result;
+        return $this->render(/** @lang text */ 'lucky/team.html.twig');
     }
 
     /**
-     * @Route("/{aaa}/contact.html.twig", name="contact.html.twig")
-     * @param $aaa
+     * @Route("/contact", name="contact")
      * @return Response
      */
-    public function contact($aaa)
+    public function contact()
     {
-        $result =  $this->render(/** @lang text */ 'lucky/contact.html.twig', ['number' => $aaa]);
-        $this->addFlash('success', $aaa);
-
-        return $result;
+        return $this->render(/** @lang text */ 'lucky/contact.html.twig');
     }
 
 
     /**
-     * @Route(path="/add-article")
+     * @Route(path="/add-article", name="add-article")
      * @param EntityManagerInterface $entityManager
+     * @param Request $request
      * @return Response
      */
-    public function next(EntityManagerInterface $entityManager)
+    public function next(EntityManagerInterface $entityManager, Request $request)
     {
         $category = new Category();
         $category->setTitle('kykykyky');
 
         $article = new Article();
 
-        $article
-            ->setImage('my-image')
-            ->setContent('my-content')
-            ->setTitle('my-title')
-            ->setCategories($category)
-        ;
+        $form = $this->createForm(ArticleType::class, $article);
 
-        $entityManager->persist($category);
-        $entityManager->persist($article);
-        $entityManager->flush();
+        $form->handleRequest($request);
 
-        return new Response('Done!');
-    }
+            if ($form->isSubmitted() && $form->isValid()) {
+                $entityManager->persist($article);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Done!');
+                return $this->redirect('add-article');
+            }
+
+                return $this->render('lucky/article_form.html.twig', [
+                'articleForm' => $form->createView(),
+        ]);
+     }
 
     /**
-     * @Route(path="/articles/{id}")
-     * *
+     * @Route(path="/articles/{id}", name="edit-article")
      * @param Article $article
      * @param EntityManagerInterface $entityManager
+     * @param Request $request
      * @return Response
      */
-    public function getArticle(Article $article, EntityManagerInterface $entityManager)
+    public function editArticle(Article $article, EntityManagerInterface $entityManager, Request $request)
     {
-        $article
-            ->setTitle('Updated title')
-            ->setContent('Updated content')
-        ;
-        $entityManager->flush();
+        $form = $this->createForm(
+            ArticleType::class,
+            $article,
+            ['method' => $request->getMethod()]
+        );
 
-        return new Response($article->getTitle());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Done!');
+            return $this->redirectToRoute('edit-article', ['id'=> $article->getId()]);
+        }
+
+        return $this->render('lucky/article_form.html.twig', [
+            'articleForm' => $form->createView(),
+        ]);
+
     }
 
     /**

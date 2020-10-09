@@ -5,5 +5,6 @@
   </component>
   <component name="PhpEntryPointsManager">
     <suppressed_annotations>@Route</suppressed_annotations>
+    <suppressed_annotations>method</suppressed_annotations>
   </component>
 </project>

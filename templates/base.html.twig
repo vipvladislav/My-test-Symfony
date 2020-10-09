@@ -36,6 +36,9 @@
 {#                {{ message }}#}
 {#            </div>#}
 {#        {% endfor %}#}
+{% block menu %}
+    {{ include('lucky/menu.html.twig') }}
+{% endblock %}
         {% block body %}{% endblock %}
         {% block javascripts %}
             <script src="{{ asset('js/jquery.min.js') }}"></script>
@@ -54,7 +57,9 @@
             <script src="{{ asset('js/google-map.js') }}"></script>
             <script src="{{ asset('js/main.js') }}"></script>
         {% endblock %}
-
+{% block footer %}
+    {{ include('lucky/footer.html.twig') }}
+    {% endblock %}
 
     </body>
 </html>
