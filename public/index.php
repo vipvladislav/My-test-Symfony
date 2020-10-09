@@ -1,4 +1,12 @@
 <?php
+//HOME WORK IN COURSE PHP
+//$child = array("blue" => "Sasha", "red" => "Dasha", "gold" => "Pasha");
+//
+//foreach ($child as $x => $x_value) {
+//
+//   print_r ("<h3 style='background-color: $x'> Key=" . $x . ", Value=" . $x_value);
+//    echo "<br>";
+//}exit;
 
 use App\Kernel;
 use Symfony\Component\Dotenv\Dotenv;
@@ -28,3 +36,7 @@ $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
+
+
+
+
