@@ -23,12 +23,13 @@ final class ArticleFactory extends ModelFactory
     {
         return [
             'title' => self::faker()->name,
-//            'content' => self::faker()->realText(80),
+            'description' => self::faker()->realText(150),
             'content' => self::faker()->paragraphs(
                 self::faker()->numberBetween(1, 4),
                 true
             ),
-            'image' => self::faker()->domainName
+            'image' => self::faker()->domainName(),
+            'createdAt' => self::faker()->dateTimeBetween('-18 month')
         ];
     }
 

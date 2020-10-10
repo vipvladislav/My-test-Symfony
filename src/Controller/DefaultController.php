@@ -7,8 +7,10 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Category;
 use App\Form\ArticleType;
+use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,26 +34,40 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * @param ArticleRepository $articleRepository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
      * @return Response
      * @Route("/blog", name="blog")
      */
-    public function blog()
+    public function blog(ArticleRepository $articleRepository, PaginatorInterface $paginator, Request $request)
     {
-        return $this->render('lucky/blog.html.twig');
+        $queryBuilder = $articleRepository->findArticlesQueryBuilder();
+        $articles = $paginator->paginate(
+            $queryBuilder, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            9//*limit per page*/
+        );
+
+
+        return $this->render('lucky/blog.html.twig', [
+            'articles' => $articles
+        ]);
     }
 
     /**
-     * @Route("/{aaa}/blog_single.html.twig", name="blog_single.html.twig")
-     * @param $aaa
+     * @Route("/blog/{id}", name="blog_single")
+     * @param Article $article
      * @return Response
      */
-    public function blogSingle($aaa)
+    public function blogSingle(Article $article)
     {
-        $result =  $this->render('lucky/blog_single.html.twig', ['number' => $aaa]);
-        $this->addFlash('success', $aaa);
+        return $this->render('lucky/blog_single.html.twig', [
+            'article' => $article
+        ]);
 
-        return $result;
     }
+
 
     /**
      * @Route("/team", name="team")
@@ -70,6 +86,9 @@ class DefaultController extends AbstractController
     {
         return $this->render(/** @lang text */ 'lucky/contact.html.twig');
     }
+
+
+
 
 
     /**
